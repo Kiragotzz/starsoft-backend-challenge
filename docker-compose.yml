@@ -60,7 +60,7 @@ services:
   # NestJS Application
   app:
     build:
-      context: .
+      context: ./back-end
       dockerfile: Dockerfile
     container_name: cinema-app
     environment:
@@ -83,7 +83,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
+      - ./back-end:/app
       - /app/node_modules
     networks:
       - cinema-network

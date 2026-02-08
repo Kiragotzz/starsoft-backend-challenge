@@ -1,3 +1,44 @@
+# Cinema Ticketing System - Sistema de Venda de Ingressos
+
+## 🚀 Início Rápido
+
+### Como Executar (Um Único Comando)
+
+```bash
+# Na raiz do projeto
+docker-compose up
+```
+
+Aguarde até ver:
+```
+cinema-app | Application is running on: http://localhost:3000
+cinema-app | Swagger documentation: http://localhost:3000/api-docs
+```
+
+### Acessar a Aplicação
+
+- **API REST**: http://localhost:3000
+- **Swagger UI**: http://localhost:3000/api-docs
+- **RabbitMQ Management**: http://localhost:15672 (cinema_user / cinema_pass)
+
+### Testar as Funcionalidades
+
+Execute o script de teste automatizado:
+
+```bash
+chmod +x test-api.sh
+./test-api.sh
+```
+
+Ou siga o [Guia de Testes com cURL](./back-end/README.md#guia-de-testes-com-curl) no README completo.
+
+### Documentação Completa
+
+- **[README Completo da Aplicação](./back-end/README.md)**: Arquitetura, tecnologias, estratégias, endpoints, decisões técnicas, melhorias futuras
+- **[Progresso do Desenvolvimento](./PROGRESSO.md)**: Histórico de implementação
+
+---
+
 # Teste para Desenvolvedor(a) Back-End Node.js/NestJS - Sistemas Distribuídos
 
 ## Introdução

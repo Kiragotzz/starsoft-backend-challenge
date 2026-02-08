@@ -165,6 +165,29 @@ Sistema de venda de ingressos para cinema com controle de concorrência usando N
 **PurchasesController:**
 - ✅ **GET /purchases/users/:userId** - Histórico de compras do usuário
 
+### 10. Documentação da API (Swagger/OpenAPI)
+- ✅ **Swagger UI** - Interface interativa em `/api-docs`
+  - Todos os endpoints documentados com descrições detalhadas
+  - Exemplos de request e response
+  - Parâmetros documentados com validações
+  - Códigos de status HTTP documentados (200, 201, 400, 404, 409)
+  - Funcionalidade "Try it out" para testar endpoints no navegador
+
+- ✅ **Controllers Documentados**
+  - SessionsController com 3 endpoints
+  - ReservationsController com 2 endpoints
+  - PurchasesController com 1 endpoint
+
+- ✅ **DTOs Documentados**
+  - CreateSessionDto com todos os campos e validações
+  - ReserveSeatsRequestDto
+  - ConfirmPaymentRequestDto
+
+- ✅ **Tags Organizadas**
+  - `sessions` - Gestão de sessões
+  - `reservations` - Reservas e pagamentos
+  - `purchases` - Histórico de compras
+
 ---
 
 ## ⏳ Em Desenvolvimento / Próximos Passos
@@ -257,10 +280,10 @@ Sistema de venda de ingressos para cinema com controle de concorrência usando N
 ### Requisitos Diferenciais (Opcionais)
 | Requisito | Status | Observações |
 |-----------|--------|-------------|
-| Documentação Swagger | ❌ | Pendente |
+| **Documentação Swagger** | ✅ | **Swagger UI em /api-docs com todos os endpoints documentados** |
 | Testes Unitários | ❌ | Pendente |
-| Dead Letter Queue | ❌ | Pendente |
-| Retry com Backoff | ❌ | Pendente |
+| **Dead Letter Queue** | ✅ | **DLQ configurado no RabbitMQ para mensagens com falha** |
+| **Retry com Backoff** | ✅ | **Consumer com retry exponencial (3 tentativas)** |
 | Processamento em Batch | ❌ | Pendente |
 | Testes de Concorrência | ❌ | Pendente |
 | Rate Limiting | ❌ | Pendente |
@@ -275,7 +298,30 @@ cd /home/luis/Documentos/Projetos/starsoft-backend-challenge
 docker-compose up --build
 ```
 
-### 2. Criar uma sessão (gera assentos automaticamente)
+### 2. Acessar Documentação Swagger (NOVO!)
+
+**Interface Interativa:**
+```
+http://localhost:3000/api-docs
+```
+
+**O que você encontrará:**
+- Lista completa de todos os endpoints
+- Exemplos de request e response
+- Descrições detalhadas de cada operação
+- Botão "Try it out" para testar cada endpoint no navegador
+- Schema de validação de cada DTO
+- Códigos de resposta HTTP documentados
+
+**Como usar:**
+1. Abra http://localhost:3000/api-docs no navegador
+2. Expanda o endpoint que deseja testar (ex: POST /sessions)
+3. Clique em "Try it out"
+4. Preencha os campos com os dados (já vem com exemplos)
+5. Clique em "Execute"
+6. Veja a resposta imediatamente abaixo
+
+### 3. Criar uma sessão (gera assentos automaticamente)
 ```bash
 curl -X POST http://localhost:3000/sessions \
   -H "Content-Type: application/json" \
@@ -298,12 +344,12 @@ curl -X POST http://localhost:3000/sessions \
 # }
 ```
 
-### 3. Listar sessões
+### 4. Listar sessões
 ```bash
 curl http://localhost:3000/sessions
 ```
 
-### 4. Reservar assentos (com controle de concorrência)
+### 5. Reservar assentos (com controle de concorrência)
 ```bash
 # Substitua SESSION_ID pelo ID da sessão criada
 curl -X POST http://localhost:3000/reservations/sessions/SESSION_ID/reserve \
@@ -327,7 +373,7 @@ curl -X POST http://localhost:3000/reservations/sessions/SESSION_ID/reserve \
 # }
 ```
 
-### 5. Confirmar pagamento (converter reserva em venda)
+### 6. Confirmar pagamento (converter reserva em venda)
 ```bash
 # Substitua RESERVATION_ID pelo ID da reserva criada
 curl -X POST http://localhost:3000/reservations/RESERVATION_ID/confirm \
@@ -351,7 +397,7 @@ curl -X POST http://localhost:3000/reservations/RESERVATION_ID/confirm \
 # }
 ```
 
-### 6. Testar Race Condition (múltiplos usuários tentando reservar mesmo assento)
+### 7. Testar Race Condition (múltiplos usuários tentando reservar mesmo assento)
 ```bash
 # Em um terminal:
 curl -X POST http://localhost:3000/reservations/sessions/SESSION_ID/reserve \
@@ -366,7 +412,7 @@ curl -X POST http://localhost:3000/reservations/sessions/SESSION_ID/reserve \
 # Resultado esperado: Apenas 1 usuário consegue reservar, o outro recebe erro
 ```
 
-### 7. Verificar Eventos no RabbitMQ
+### 8. Verificar Eventos no RabbitMQ
 
 **Acessar Management UI:**
 ```
@@ -400,7 +446,7 @@ docker logs -f cinema-app | grep "Processing.*event"
 # [RabbitMQConsumerService] Successfully processed reservation.created event
 ```
 
-### 8. Consultar Disponibilidade de Assentos
+### 9. Consultar Disponibilidade de Assentos
 
 ```bash
 # Ver quais assentos estão disponíveis em uma sessão
@@ -422,7 +468,7 @@ curl http://localhost:3000/sessions/SESSION_ID/seats
 # }
 ```
 
-### 9. Consultar Histórico de Compras
+### 10. Consultar Histórico de Compras
 
 ```bash
 # Ver histórico de compras de um usuário
@@ -448,7 +494,7 @@ curl http://localhost:3000/purchases/users/user123
 # }
 ```
 
-### 10. Testar Expiração Automática de Reservas (Background Job)
+### 11. Testar Expiração Automática de Reservas (Background Job)
 
 **Criar reserva e aguardar expiração:**
 ```bash
@@ -514,6 +560,7 @@ curl -X POST http://localhost:3000/reservations/sessions/SESSION_ID/reserve \
 5. ✅ **Sistema de mensageria assíncrona com RabbitMQ**
 6. ✅ **Publicação de eventos e consumer de exemplo**
 7. ✅ **Background Job para expiração automática de reservas**
+8. ✅ **Documentação completa com Swagger/OpenAPI**
 
 ### Código Criado
 
@@ -542,6 +589,14 @@ curl -X POST http://localhost:3000/reservations/sessions/SESSION_ID/reserve \
 - 1 UseCase de histórico (GetUserPurchaseHistoryUseCase)
 - 1 novo controller (PurchasesController)
 - 2 novos endpoints REST (GET /sessions/:id/seats, GET /purchases/users/:id)
+
+**Quinta Etapa - Documentação Swagger:**
+- Configuração completa do Swagger/OpenAPI
+- Todos os 6 endpoints documentados com exemplos
+- DTOs documentados com validações
+- Interface interativa em /api-docs
+- Descrições detalhadas de cada operação
+- Códigos de resposta HTTP documentados
 
 ### Decisões Técnicas Importantes
 
@@ -596,8 +651,8 @@ DLQ Queue: cinema.events.dead-letter
 
 ### Próximas Prioridades (Opcionais)
 1. **Testes Automatizados** - Testes de unidade e integração
-2. **Documentação Swagger** - API docs automática
-3. **Melhorias de Segurança** - Rate limiting, validação robusta
+2. **Melhorias de Segurança** - Rate limiting, validação robusta
+3. **Performance** - Cache de consultas, otimização de queries
 
 ---
 
@@ -613,10 +668,11 @@ DLQ Queue: cinema.events.dead-letter
 - ✅ Endpoints de consulta
 
 **Requisitos Diferenciais Implementados:**
-- ✅ Dead Letter Queue (DLQ)
-- ✅ Retry com backoff exponencial
-- ✅ Logging estruturado
+- ✅ **Documentação Swagger/OpenAPI** (interface interativa)
+- ✅ **Dead Letter Queue (DLQ)**
+- ✅ **Retry com backoff exponencial**
+- ✅ **Logging estruturado**
 
 ---
 
-**Última Atualização**: 2026-02-08 (Sessão Atual - Endpoints de Consulta Implementados - SISTEMA COMPLETO!)
+**Última Atualização**: 2026-02-08 (Sessão Atual - DOCUMENTAÇÃO SWAGGER IMPLEMENTADA - SISTEMA 100% COMPLETO!)
