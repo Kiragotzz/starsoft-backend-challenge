@@ -63,9 +63,10 @@ create_session() {
         -H "Content-Type: application/json" \
         -d '{
             "movieName": "Interstellar",
-            "startTime": "2026-02-15T20:00:00Z",
-            "totalSeats": 10,
-            "pricePerSeat": 30.00
+            "roomName": "Sala 1",
+            "sessionTime": "2026-02-15T20:00:00Z",
+            "ticketPrice": 30.00,
+            "totalSeats": 16
         }')
 
     if [ "$JQ_INSTALLED" = true ]; then
@@ -113,7 +114,7 @@ get_available_seats() {
         AVAILABLE=$(echo "$RESPONSE" | grep -o '"availableSeats":[0-9]*' | cut -d':' -f2)
     fi
 
-    print_success "Assentos disponíveis: $AVAILABLE/10"
+    print_success "Assentos disponíveis: $AVAILABLE/16"
 }
 
 # Step 4: Reserve seats (User Alice)
@@ -124,12 +125,12 @@ reserve_seats_alice() {
         -H "Content-Type: application/json" \
         -d '{
             "userId": "user-alice",
-            "seatNumbers": [1, 2, 3]
+            "seatNumbers": ["A1", "A2", "A3"]
         }')
 
     if [ "$JQ_INSTALLED" = true ]; then
         echo "$RESPONSE" | jq
-        RESERVATION_ID_ALICE=$(echo "$RESPONSE" | jq -r '.reservationId')
+        RESERVATION_ID_ALICE=$(echo "$RESPONSE" | jq -r '.data.reservationId')
     else
         echo "$RESPONSE"
         RESERVATION_ID_ALICE=$(echo "$RESPONSE" | grep -o '"reservationId":"[^"]*' | cut -d'"' -f4)
@@ -151,7 +152,7 @@ test_race_condition() {
         -H "Content-Type: application/json" \
         -d '{
             "userId": "user-bob",
-            "seatNumbers": [2, 4, 5]
+            "seatNumbers": ["A2", "A4", "A5"]
         }')
 
     if [ "$HTTP_CODE" = "409" ]; then
@@ -169,12 +170,12 @@ reserve_seats_bob() {
         -H "Content-Type: application/json" \
         -d '{
             "userId": "user-bob",
-            "seatNumbers": [6, 7]
+            "seatNumbers": ["B1", "B2"]
         }')
 
     if [ "$JQ_INSTALLED" = true ]; then
         echo "$RESPONSE" | jq
-        RESERVATION_ID_BOB=$(echo "$RESPONSE" | jq -r '.reservationId')
+        RESERVATION_ID_BOB=$(echo "$RESPONSE" | jq -r '.data.reservationId')
     else
         echo "$RESPONSE"
         RESERVATION_ID_BOB=$(echo "$RESPONSE" | grep -o '"reservationId":"[^"]*' | cut -d'"' -f4)
@@ -195,7 +196,7 @@ confirm_payment_alice() {
 
     if [ "$JQ_INSTALLED" = true ]; then
         echo "$RESPONSE" | jq
-        SALE_ID_ALICE=$(echo "$RESPONSE" | jq -r '.saleId')
+        SALE_ID_ALICE=$(echo "$RESPONSE" | jq -r '.data.saleId')
     else
         echo "$RESPONSE"
         SALE_ID_ALICE=$(echo "$RESPONSE" | grep -o '"saleId":"[^"]*' | cut -d'"' -f4)
@@ -215,7 +216,7 @@ test_idempotency() {
         }')
 
     if [ "$JQ_INSTALLED" = true ]; then
-        SALE_ID_DUPLICATE=$(echo "$RESPONSE" | jq -r '.saleId')
+        SALE_ID_DUPLICATE=$(echo "$RESPONSE" | jq -r '.data.saleId')
     else
         SALE_ID_DUPLICATE=$(echo "$RESPONSE" | grep -o '"saleId":"[^"]*' | cut -d'"' -f4)
     fi
@@ -231,7 +232,7 @@ test_idempotency() {
 get_purchase_history_alice() {
     print_step "PASSO 9: Consultando histórico de compras da Alice"
 
-    RESPONSE=$(curl -s -X GET $BASE_URL/purchases/user/user-alice)
+    RESPONSE=$(curl -s -X GET $BASE_URL/purchases/users/user-alice)
 
     if [ "$JQ_INSTALLED" = true ]; then
         echo "$RESPONSE" | jq
@@ -248,7 +249,7 @@ get_purchase_history_alice() {
 get_purchase_history_bob() {
     print_step "PASSO 10: Consultando histórico de compras do Bob"
 
-    RESPONSE=$(curl -s -X GET $BASE_URL/purchases/user/user-bob)
+    RESPONSE=$(curl -s -X GET $BASE_URL/purchases/users/user-bob)
 
     if [ "$JQ_INSTALLED" = true ]; then
         echo "$RESPONSE" | jq
@@ -278,24 +279,24 @@ test_expiration() {
     done
 
     echo ""
-    print_info "Verificando se assentos 6 e 7 foram liberados..."
+    print_info "Verificando se assentos B1 e B2 foram liberados..."
 
     RESPONSE=$(curl -s -X GET $BASE_URL/sessions/$SESSION_ID/seats)
 
     if [ "$JQ_INSTALLED" = true ]; then
-        echo "$RESPONSE" | jq '.seats[] | select(.seatNumber == 6 or .seatNumber == 7)'
+        echo "$RESPONSE" | jq '.seats[] | select(.seatNumber == "B1" or .seatNumber == "B2")'
 
-        SEAT_6_STATUS=$(echo "$RESPONSE" | jq -r '.seats[] | select(.seatNumber == 6) | .status')
-        SEAT_7_STATUS=$(echo "$RESPONSE" | jq -r '.seats[] | select(.seatNumber == 7) | .status')
+        SEAT_B1_STATUS=$(echo "$RESPONSE" | jq -r '.seats[] | select(.seatNumber == "B1") | .status')
+        SEAT_B2_STATUS=$(echo "$RESPONSE" | jq -r '.seats[] | select(.seatNumber == "B2") | .status')
 
-        if [ "$SEAT_6_STATUS" = "AVAILABLE" ] && [ "$SEAT_7_STATUS" = "AVAILABLE" ]; then
-            print_success "Expiração funcionando! Assentos 6 e 7 liberados automaticamente"
+        if [ "$SEAT_B1_STATUS" = "AVAILABLE" ] && [ "$SEAT_B2_STATUS" = "AVAILABLE" ]; then
+            print_success "Expiração funcionando! Assentos B1 e B2 liberados automaticamente"
         else
-            print_error "Assentos não foram liberados. Status: 6=$SEAT_6_STATUS, 7=$SEAT_7_STATUS"
+            print_error "Assentos não foram liberados. Status: B1=$SEAT_B1_STATUS, B2=$SEAT_B2_STATUS"
         fi
     else
         echo "$RESPONSE"
-        print_info "Verifique manualmente se os assentos 6 e 7 estão AVAILABLE"
+        print_info "Verifique manualmente se os assentos B1 e B2 estão AVAILABLE"
     fi
 }
 
