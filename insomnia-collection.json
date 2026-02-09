@@ -1,0 +1,440 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-02-09T14:30:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "req_create_session",
+      "parentId": "fld_sessions",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/sessions",
+      "name": "1. Create Session",
+      "description": "Cria uma nova sessão de cinema com 16 assentos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"movieName\": \"Interstellar\",\n  \"roomName\": \"Sala 1\",\n  \"sessionTime\": \"2026-02-15T20:00:00Z\",\n  \"ticketPrice\": 30.00,\n  \"totalSeats\": 16\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1707489600000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_list_sessions",
+      "parentId": "fld_sessions",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/sessions",
+      "name": "2. List All Sessions",
+      "description": "Lista todas as sessões cadastradas",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1707489500000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_get_seats",
+      "parentId": "fld_sessions",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/sessions/{{ _.session_id }}/seats",
+      "name": "3. Get Available Seats",
+      "description": "Consulta disponibilidade de assentos em tempo real",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1707489400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_reserve_alice",
+      "parentId": "fld_reservations",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/reservations/sessions/{{ _.session_id }}/reserve",
+      "name": "4. Reserve Seats (Alice)",
+      "description": "Reserva assentos A1, A2, A3 para user-alice (expira em 30s)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"userId\": \"user-alice\",\n  \"seatNumbers\": [\"A1\", \"A2\", \"A3\"]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1707489300000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_reserve_bob_conflict",
+      "parentId": "fld_reservations",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/reservations/sessions/{{ _.session_id }}/reserve",
+      "name": "5. Test Race Condition (Bob - DEVE FALHAR)",
+      "description": "Tenta reservar A2 que já está reservado (esperado: 409 Conflict)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"userId\": \"user-bob\",\n  \"seatNumbers\": [\"A2\", \"A4\", \"A5\"]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1707489200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_reserve_bob",
+      "parentId": "fld_reservations",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/reservations/sessions/{{ _.session_id }}/reserve",
+      "name": "6. Reserve Seats (Bob)",
+      "description": "Reserva assentos B1, B2 para user-bob",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"userId\": \"user-bob\",\n  \"seatNumbers\": [\"B1\", \"B2\"]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1707489100000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_confirm_alice",
+      "parentId": "fld_reservations",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/reservations/{{ _.reservation_id_alice }}/confirm",
+      "name": "7. Confirm Payment (Alice)",
+      "description": "Confirma pagamento da reserva de Alice",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"userId\": \"user-alice\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1707489000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_confirm_alice_idempotency",
+      "parentId": "fld_reservations",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/reservations/{{ _.reservation_id_alice }}/confirm",
+      "name": "8. Test Idempotency (Confirm Again)",
+      "description": "Confirma o mesmo pagamento novamente (deve retornar mesmo saleId)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"userId\": \"user-alice\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1707488900000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_history_alice",
+      "parentId": "fld_purchases",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/purchases/users/user-alice",
+      "name": "9. Purchase History (Alice)",
+      "description": "Histórico de compras de Alice (deve ter 1 compra)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1707488800000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_history_bob",
+      "parentId": "fld_purchases",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/purchases/users/user-bob",
+      "name": "10. Purchase History (Bob)",
+      "description": "Histórico de compras de Bob (deve ter 0 - não confirmou pagamento)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1707488700000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_concurrent_user1",
+      "parentId": "fld_concurrency_test",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/reservations/sessions/{{ _.session_id }}/reserve",
+      "name": "Concurrent Request 1 (Charlie)",
+      "description": "Execute simultaneamente com Request 2 para testar race condition",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"userId\": \"user-charlie\",\n  \"seatNumbers\": [\"C1\"]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1707488600000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_concurrent_user2",
+      "parentId": "fld_concurrency_test",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "url": "{{ _.base_url }}/reservations/sessions/{{ _.session_id }}/reserve",
+      "name": "Concurrent Request 2 (Diana)",
+      "description": "Execute simultaneamente com Request 1 (Ctrl+Enter nos dois ao mesmo tempo)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"userId\": \"user-diana\",\n  \"seatNumbers\": [\"C1\"]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1707488500000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_sessions",
+      "parentId": "wrk_cinema",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "name": "1. Sessions",
+      "description": "Gestão de sessões de cinema",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1707489600000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_reservations",
+      "parentId": "wrk_cinema",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "name": "2. Reservations",
+      "description": "Reserva e confirmação de pagamento",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1707489500000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_purchases",
+      "parentId": "wrk_cinema",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "name": "3. Purchases",
+      "description": "Histórico de compras",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1707489400000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_concurrency_test",
+      "parentId": "wrk_cinema",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "name": "4. Concurrency Tests",
+      "description": "Teste de race condition (execute requests simultaneamente)",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1707489300000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_cinema",
+      "parentId": null,
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "name": "Cinema Ticketing System",
+      "description": "Sistema de venda de ingressos com controle de concorrência",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_cinema",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "session_id": "COLE_AQUI_O_ID_DA_SESSAO_CRIADA",
+        "reservation_id_alice": "COLE_AQUI_O_ID_DA_RESERVA_DE_ALICE",
+        "reservation_id_bob": "COLE_AQUI_O_ID_DA_RESERVA_DE_BOB"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "session_id",
+          "reservation_id_alice",
+          "reservation_id_bob"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1707489600000,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_cookies",
+      "parentId": "wrk_cinema",
+      "modified": 1707489600000,
+      "created": 1707489600000,
+      "name": "Cookie Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    }
+  ]
+}
